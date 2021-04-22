@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>계산기</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <script>
+        window.onload = function(){
+            var n1 = document.getElementById('n1');
+            var n2 = document.getElementById('n2');
+            var op = document.getElementById('op');
+            var result = document.getElementById('result');
+            var btn = document.getElementsByTagName('button')[0];
+            
+            btn.onclick = function(){
+                if(op.value == '+'){
+                    // result.value = n1.value + n2.value;// 문자열로 출력
+                    result.value = Number(n1.value) + Number(n2.value);// 권장
+                    // result.value = n1.value*1 + n2.value*1;// Number 대신 *1, js라서 가능, 권장하지 않는 방법
+                } else if(op.value == '-') {
+                    result.value = Number(n1.value) - Number(n2.value);
+                } else if(op.value == '*') {
+                    result.value = Number(n1.value) * Number(n2.value);
+                } else if(op.value == '/') {
+                    result.value = Number(n1.value) / Number(n2.value);
+                }
+                // print Results
+                var date = new Date();
+                var yy = date.getFullYear();
+                var mm = date.getMonth()+1;
+                var dd = date.getDate();
+                var h = date.getHours();
+                var m = date.getMinutes();
+                var s = date.getSeconds();
+                var setDate = `${yy}-${mm}-${dd} ${h}:${m}:${s}`;
+                console.log(setDate);
+                var history = document.getElementById('history');
+                var t = '<table>';
+                    t += '<tr>';
+                    t += `<td>${n1.value} ${op.value} ${n2.value} = ${result.value}</td>`
+                    t += `<td>${setDate}</td>`;
+                    t += '</tr>';
+                    t += '</table>';
+                console.log(t);
+                history.innerHTML += t;
+            }
+        }
+
+    </script>
+
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="n1">
+    <select id="op">
+        <!-- op: operator 약자 -->
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+    </select>
+    <input type="text" id="n2">
+    <button>=</button>
+    <input type="text" id="result" readonly>
+    <hr>
+    <!-- 
+        숙제!
+        연산을 실행할 때마다 히스토리에 계산한 이력을 출력
+        5 + 3 = 8           2021-04-21 16:04:22
+        5 - 3 = 2           2021-04-21 16:04:22
+        5 * 3 = 15          2021-04-21 16:04:22
+        5 / 3 = 1.66666     2021-04-21 16:04:22
+     -->
+    <div id="history"></div>
+</body>
+</html>
