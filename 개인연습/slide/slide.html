@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide</title>
+
+    <script src="/source/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function(){
+            var toggle = true
+            var repeat = setInterval(function(){
+                if(toggle)
+                    $('#next').click();
+                else
+                    $('#pre').click();
+            }, 1000);
+
+            // setInterval(repeat, 1000);
+
+            var thumbColor = ['lightblue', 'lightcoral', 'lightcyan', 'lightgreen', 'lightgrey', 'lightyellow', 'aquamarine', 'lightskyblue', 'beige'];
+            // [each]를 사용해서 class가 thumb인 요소를 배열로 저장
+            var thumbBg = $('.thumb').each(function(i){
+                $(this).css('background', thumbColor[i]);
+            });
+            // #preview 기본 컬러 지정
+            $('#preview').css('background', thumbColor[0]);
+            // .thumb을 클릭하면 border 적용
+            $('.thumb').click(function(){
+                $('.thumb').not($(this)).css({'border':'none', 'box-sizing':'border-box'});
+                $(this).css({'border':'10px solid #ddd', 'box-sizing':'border-box'});
+                // .thumb을 선택하면 #preview에 this attr('background') 적용
+                console.log($(this).attr('background'));// undefined 잖아!!! 
+                $('#preview').css('background', $(this).css('background'));// 아, css..
+                clearInterval(repeat)// .thumb를 클릭하면 repeat 종료
+            });
+            // #next 클릭하면 옆으로 한 칸 씩 이동
+            // #wrap_thumb의 가려진 .thumb들의 총 너비 값 구하기
+            // var ctnThumbWidth = $('#ctn_thumb').css('width');// 400px
+            var ctnThumbWidth = $('#ctn_thumb').width();// 400
+            var wrapThumbWidth = $('.thumb').length*100;// 900 
+            console.log(ctnThumbWidth+', '+wrapThumbWidth);
+            console.log(wrapThumbWidth-ctnThumbWidth);// NaN? why? 위에서 ctnThumbWidth를 구할 때 .css('width')이라고 적었더니 결과 값이 400px이어서 900-400px로 계산되었다.
+            var index = 0;
+            console.log($('.thumb').length);// 9
+            $('#next').click(function(){
+                if(index < $('.thumb').length)// index의 수가 .thumb의 개수(9개)보다 적으면
+                    index++;// index의 수 1씩 증가
+                    console.log(-index*100+'px');
+                if(index*100 <= wrapThumbWidth-ctnThumbWidth)// 그런데 index의 수가 가려진 .thumb의 수(5개)보다 작거나 같으면(최대 5번)
+                    $('#wrap_thumb').stop().animate({// .stop() : 현재 동작하고 있는 애니메이션을 즉시 중단하고 다음 이벤트를 실행시키고자 할때 사용한다.
+                        'margin-left': -index*100+'px'// 왼쪽으로 -index*100px씩 이동
+                    });
+                else {
+                    index--;// 그렇지 않으면(index의 수가 6이 되면) 버튼을 누를 때 index의 수를 1씩 감소(6으로 유지)
+                    toggle = false;// 가려진 .thumb이 모두 보이고 나면 #pre를 실행하기 위해 toggle 값을 false로 전환
+                }
+            });
+            $('#pre').click(function(){
+                if(index > 0){// index의 수가 0보다 크면
+                    index--;// index의 수 1씩 감소
+                    console.log(-index*100+'px');
+                    $('#wrap_thumb').stop().animate({
+                        'margin-left': -index*100+'px' 
+                    });
+                } else
+                    toggle = true;
+            });
+        });
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-size: 0;
+        }
+        #container {
+            width: 400px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            position: relative;
+        }
+        #preview {
+            width: 100%;
+            height: 400px;
+            background: black;
+            border: 10px solid white;
+            box-sizing: border-box;
+        }
+        #ctn_thumb {
+            width: 100%;
+            overflow: hidden;
+        }
+        #wrap_thumb {
+            width: 900px;
+            height: 100px;
+        }
+        .thumb {
+            width: 100px;
+            height: 100px;
+            display: inline-block;
+        }
+        #btn_arrow a {
+            position: absolute;
+            bottom: 36px;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+
+        }
+        #pre {
+            left: 5px;
+        }
+        #next {
+            right: 5px;
+        }
+        #btn_arrow img {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="preview"></div>
+        <div id="ctn_thumb">
+            <div id="wrap_thumb">
+                <div class="thumb"></div>
+                <div class="thumb"></div>
+                <div class="thumb"></div>
+                <div class="thumb"></div>
+                <div class="thumb"></div>
+                <div class="thumb"></div>
+                <div class="thumb"></div>
+                <div class="thumb"></div>
+                <div class="thumb"></div>
+            </div>
+        </div>
+        <div id="btn_arrow">
+            <a href="#" id="pre"><img src="/slide/res/arrow_left.png" alt=""></a>
+            <a href="#" id="next"><img src="/slide/res/arrow_right.png" alt=""></a>
+        </div>
+    </div>
+</body>
+</html>
